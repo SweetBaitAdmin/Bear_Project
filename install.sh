@@ -351,7 +351,7 @@ while true; do
     t|T)
       echo
       echo "### Installing T-Pot Tarpit."
-      myTPOT_TYPE="HIVE"
+      myTPOT_TYPE="SENSOR"
       cp ${HOME}/tpotce/compose/tarpit.yml ${HOME}/tpotce/docker-compose.yml
       myINFO=""
       break ;;
