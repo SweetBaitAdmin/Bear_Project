@@ -5,7 +5,7 @@ networks:
   go-pot_local:
   hellpot_local:
   heralding_local:
-  nginx_local:
+  # nginx_local:
   ewsposter_local:
 
 services:
@@ -156,22 +156,22 @@ services:
 #### NSM
 ##################
 
-# Fatt service
-  fatt:
-    container_name: fatt
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    network_mode: "host"
-    cap_add:
-     - NET_ADMIN
-     - SYS_NICE
-     - NET_RAW
-    image: ${TPOT_REPO}/fatt:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    volumes:
-     - ${TPOT_DATA_PATH}/fatt/log:/opt/fatt/log
+# # Fatt service
+#   fatt:
+#     container_name: fatt
+#     restart: always
+#     depends_on:
+#       tpotinit:
+#         condition: service_healthy
+#     network_mode: "host"
+#     cap_add:
+#      - NET_ADMIN
+#      - SYS_NICE
+#      - NET_RAW
+#     image: ${TPOT_REPO}/fatt:${TPOT_VERSION}
+#     pull_policy: ${TPOT_PULL_POLICY}
+#     volumes:
+#      - ${TPOT_DATA_PATH}/fatt/log:/opt/fatt/log
 
 # P0f service
   p0f:
@@ -187,26 +187,26 @@ services:
     volumes:
      - ${TPOT_DATA_PATH}/p0f/log:/var/log/p0f
 
-# Suricata service
-  suricata:
-    container_name: suricata
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    environment:
-     - OINKCODE=${OINKCODE:-OPEN} # Default to OPEN if unset or NULL (value provided by T-Pot .env)
-    # Loading external Rules from URL
-    # - FROMURL="https://username:password@yoururl.com|https://username:password@otherurl.com"
-    network_mode: "host"
-    cap_add:
-     - NET_ADMIN
-     - SYS_NICE
-     - NET_RAW
-    image: ${TPOT_REPO}/suricata:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    volumes:
-     - ${TPOT_DATA_PATH}/suricata/log:/var/log/suricata
+# # Suricata service
+#   suricata:
+#     container_name: suricata
+#     restart: always
+#     depends_on:
+#       tpotinit:
+#         condition: service_healthy
+#     environment:
+#      - OINKCODE=${OINKCODE:-OPEN} # Default to OPEN if unset or NULL (value provided by T-Pot .env)
+#     # Loading external Rules from URL
+#     # - FROMURL="https://username:password@yoururl.com|https://username:password@otherurl.com"
+#     network_mode: "host"
+#     cap_add:
+#      - NET_ADMIN
+#      - SYS_NICE
+#      - NET_RAW
+#     image: ${TPOT_REPO}/suricata:${TPOT_VERSION}
+#     pull_policy: ${TPOT_PULL_POLICY}
+#     volumes:
+#      - ${TPOT_DATA_PATH}/suricata/log:/var/log/suricata
 
 
 ##################
@@ -267,14 +267,14 @@ services:
       tpotinit:
         condition: service_healthy
     environment:
-     - LS_JAVA_OPTS=-Xms1024m -Xmx1024m
+     - LS_JAVA_OPTS=-Xms512m -Xmx512m
      - TPOT_TYPE=${TPOT_TYPE:-HIVE}
      - TPOT_HIVE_USER=${TPOT_HIVE_USER}
      - TPOT_HIVE_IP=${TPOT_HIVE_IP}
      - LS_SSL_VERIFICATION=${LS_SSL_VERIFICATION:-full}
     ports:
      - "127.0.0.1:64305:64305"
-    mem_limit: 2g
+    mem_limit: 1g
     image: ${TPOT_REPO}/logstash:${TPOT_VERSION}
     pull_policy: ${TPOT_PULL_POLICY}
     volumes:
