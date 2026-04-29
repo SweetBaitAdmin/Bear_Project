@@ -1,23 +1,10 @@
 # T-Pot: CUSTOM EDITION
-# Generated on: 2026-04-27 10:54:34
+# Generated on: 2026-04-29 15:39:40
 networks:
-  adbhoney_local: null
-  # beelzebub_local: null
-  cowrie_local: null
   endlessh_local: null
-  # galah_local: null
-  go-pot_local: null
-  h0neytr4p_local: null
-  hellpot_local: null
   heralding_local: null
-  # honeyaml_local: null
-  # honeypots_local: null
-  ipphoney_local: null
   log4pot_local: null
-  miniprint_local: null
-  redishoneypot_local: null
   sentrypeer_local: null
-  # tanner_local: null
   nginx_local: null
   ewsposter_local: null
 services:
@@ -47,76 +34,18 @@ services:
       tpotinit:
         condition: service_healthy
     environment:
-     - LS_JAVA_OPTS=-Xms1024m -Xmx1024m
+     - LS_JAVA_OPTS=-Xms512m -Xmx512m
      - TPOT_TYPE=${TPOT_TYPE:-HIVE}
      - TPOT_HIVE_USER=${TPOT_HIVE_USER}
      - TPOT_HIVE_IP=${TPOT_HIVE_IP}
      - LS_SSL_VERIFICATION=${LS_SSL_VERIFICATION:-full}
     ports:
      - "127.0.0.1:64305:64305"
-    mem_limit: 2g
+    mem_limit: 1g
     image: ${TPOT_REPO}/logstash:${TPOT_VERSION}
     pull_policy: ${TPOT_PULL_POLICY}
     volumes:
      - ${TPOT_DATA_PATH}:/data
-  adbhoney:
-    container_name: adbhoney
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    networks:
-    - adbhoney_local
-    ports:
-    - 5555:5555
-    image: ${TPOT_REPO}/adbhoney:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    read_only: true
-    volumes:
-    - ${TPOT_DATA_PATH}/adbhoney/log:/opt/adbhoney/log
-    - ${TPOT_DATA_PATH}/adbhoney/downloads:/opt/adbhoney/dl
-  # beelzebub:
-  #   container_name: beelzebub
-  #   restart: always
-  #   depends_on:
-  #     tpotinit:
-  #       condition: service_healthy
-  #   networks:
-  #   - beelzebub_local
-  #   ports:
-  #   - '22:22'
-  #   image: ${TPOT_REPO}/beelzebub:${TPOT_VERSION}
-  #   pull_policy: ${TPOT_PULL_POLICY}
-  #   environment:
-  #     LLM_MODEL: ${BEELZEBUB_LLM_MODEL}
-  #     LLM_HOST: ${BEELZEBUB_LLM_HOST}
-  #     OLLAMA_MODEL: ${BEELZEBUB_OLLAMA_MODEL}
-  #   read_only: true
-  #   volumes:
-  #   - ${TPOT_DATA_PATH}/beelzebub/key:/opt/beelzebub/configurations/key
-  #   - ${TPOT_DATA_PATH}/beelzebub/log:/opt/beelzebub/configurations/log
-  cowrie:
-    container_name: cowrie
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    tmpfs:
-    - /tmp/cowrie:uid=2000,gid=2000
-    - /tmp/cowrie/data:uid=2000,gid=2000
-    networks:
-    - cowrie_local
-    ports:
-    - '22:22'
-    - '23:23'
-    image: ${TPOT_REPO}/cowrie:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    read_only: true
-    volumes:
-    - ${TPOT_DATA_PATH}/cowrie/downloads:/home/cowrie/cowrie/dl
-    - ${TPOT_DATA_PATH}/cowrie/keys:/home/cowrie/cowrie/etc
-    - ${TPOT_DATA_PATH}/cowrie/log:/home/cowrie/cowrie/log
-    - ${TPOT_DATA_PATH}/cowrie/log/tty:/home/cowrie/cowrie/log/tty
   endlessh:
     container_name: endlessh
     restart: always
@@ -126,82 +55,12 @@ services:
     networks:
     - endlessh_local
     ports:
-    - 2222:2222
+    - 22:2222
     image: ${TPOT_REPO}/endlessh:${TPOT_VERSION}
     pull_policy: ${TPOT_PULL_POLICY}
     read_only: true
     volumes:
     - ${TPOT_DATA_PATH}/endlessh/log:/var/log/endlessh
-  # galah:
-  #   container_name: galah
-  #   restart: always
-  #   depends_on:
-  #     tpotinit:
-  #       condition: service_healthy
-  #   networks:
-  #   - galah_local
-  #   ports:
-  #   - 80:80
-  #   - 443:443
-  #   - 8443:8443
-  #   - 8080:8080
-  #   image: ${TPOT_REPO}/galah:${TPOT_VERSION}
-  #   pull_policy: ${TPOT_PULL_POLICY}
-  #   environment:
-  #     LLM_PROVIDER: ${GALAH_LLM_PROVIDER}
-  #     LLM_SERVER_URL: ${GALAH_LLM_SERVER_URL}
-  #     LLM_MODEL: ${GALAH_LLM_MODEL}
-  #   read_only: true
-  #   volumes:
-  #   - ${TPOT_DATA_PATH}/galah/cache:/opt/galah/config/cache
-  #   - ${TPOT_DATA_PATH}/galah/cert:/opt/galah/config/cert
-  #   - ${TPOT_DATA_PATH}/galah/log:/opt/galah/log
-  go-pot:
-    container_name: go-pot
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    networks:
-    - go-pot_local
-    ports:
-    - 8080:8080
-    image: ${TPOT_REPO}/go-pot:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    read_only: true
-    volumes:
-    - ${TPOT_DATA_PATH}/go-pot/log:/opt/go-pot/log/
-  h0neytr4p:
-    container_name: h0neytr4p
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    networks:
-    - h0neytr4p_local
-    ports:
-    - 443:443
-    image: ${TPOT_REPO}/h0neytr4p:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    read_only: true
-    volumes:
-    - ${TPOT_DATA_PATH}/h0neytr4p/log/:/opt/h0neytr4p/log/
-    - ${TPOT_DATA_PATH}/h0neytr4p/payloads/:/data/h0neytr4p/payloads/
-  hellpot:
-    container_name: hellpot
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    networks:
-    - hellpot_local
-    ports:
-    - 80:8080
-    image: ${TPOT_REPO}/hellpot:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    read_only: true
-    volumes:
-    - ${TPOT_DATA_PATH}/hellpot/log:/var/log/hellpot
   heralding:
     container_name: heralding
     restart: always
@@ -209,93 +68,31 @@ services:
       tpotinit:
         condition: service_healthy
     tmpfs:
-    - /tmp/heralding:uid=2000,gid=2000
+     - /tmp/heralding:uid=2000,gid=2000
     networks:
-    - heralding_local
+     - heralding_local
     ports:
-    # - '21:21'
-    # - '22:22'
-    # - '23:23'
-    # - '25:25'
-    # - 80:80
-    - 110:110
-    - 143:143
-    # - 443:443
-    - 465:465
-    - 993:993
-    - 995:995
-    # - 3306:3306
-    # - 3389:3389
-    - 1080:1080
-    - 5432:5432
-    - 5900:5900
+     - "21:21"
+    # - "22:22"
+     - "23:23"
+     - "25:25"
+     - "80:80"
+     - "110:110"
+     - "143:143"
+     - "443:443"
+     - "465:465"
+     - "993:993"
+     - "995:995"
+     - "3306:3306"
+     - "3389:3389"
+     - "1080:1080"
+     - "5432:5432"
+     - "5900:5900"
     image: ${TPOT_REPO}/heralding:${TPOT_VERSION}
     pull_policy: ${TPOT_PULL_POLICY}
     read_only: true
     volumes:
-    - ${TPOT_DATA_PATH}/heralding/log:/var/log/heralding
-  # honeyaml:
-  #   container_name: honeyaml
-  #   restart: always
-  #   depends_on:
-  #     tpotinit:
-  #       condition: service_healthy
-  #   networks:
-  #   - honeyaml_local
-  #   ports:
-  #   - 8080:8080
-  #   image: ${TPOT_REPO}/honeyaml:${TPOT_VERSION}
-  #   pull_policy: ${TPOT_PULL_POLICY}
-  #   read_only: true
-  #   volumes:
-  #   - ${TPOT_DATA_PATH}/honeyaml/log:/opt/honeyaml/log/
-  # honeypots:
-  #   container_name: honeypots
-  #   stdin_open: true
-  #   tty: true
-  #   restart: always
-  #   depends_on:
-  #     tpotinit:
-  #       condition: service_healthy
-  #   tmpfs:
-  #   - /tmp:uid=2000,gid=2000
-  #   networks:
-  #   - honeypots_local
-  #   ports:
-  #   - '21:21'
-  #   - '22:22'
-  #   - '23:23'
-  #   - '25:25'
-  #   - '53:53'
-  #   - 67:67/udp
-  #   - 80:80
-  #   - 110:110
-  #   - 123:123
-  #   - 143:143
-  #   - 161:161
-  #   - 389:389
-  #   - 443:443
-  #   - 445:445
-  #   - 631:631
-  #   - 1080:1080
-  #   - 1433:1433
-  #   - 1521:1521
-  #   - 3306:3306
-  #   - 3389:3389
-  #   - 5060:5060
-  #   - 5432:5432
-  #   - 5900:5900
-  #   - 6379:6379
-  #   - 6667:6667
-  #   - 8080:8080
-  #   - 9100:9100
-  #   - 9200:9200
-  #   - 11211:11211
-  #   image: ${TPOT_REPO}/honeypots:${TPOT_VERSION}
-  #   pull_policy: ${TPOT_PULL_POLICY}
-  #   read_only: true
-  #   volumes:
-  #   - ${TPOT_DATA_PATH}/honeypots/log:/var/log/honeypots
+     - ${TPOT_DATA_PATH}/heralding/log:/var/log/heralding
   honeytrap:
     container_name: honeytrap
     restart: always
@@ -314,21 +111,6 @@ services:
     - ${TPOT_DATA_PATH}/honeytrap/attacks:/opt/honeytrap/var/attacks
     - ${TPOT_DATA_PATH}/honeytrap/downloads:/opt/honeytrap/var/downloads
     - ${TPOT_DATA_PATH}/honeytrap/log:/opt/honeytrap/var/log
-  ipphoney:
-    container_name: ipphoney
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    networks:
-    - ipphoney_local
-    ports:
-    - 631:631
-    image: ${TPOT_REPO}/ipphoney:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    read_only: true
-    volumes:
-    - ${TPOT_DATA_PATH}/ipphoney/log:/opt/ipphoney/log
   log4pot:
     container_name: log4pot
     restart: always
@@ -340,48 +122,17 @@ services:
     networks:
     - log4pot_local
     ports:
-    - 8081:8080   # Changed from 80:8080 (Avoids hellpot)
-    - 8443:8080   # Changed from 443:8080 (Avoids h0neytr4p)
-    - 8000:8080   # Changed from 8080:8080 (Avoids go-pot)
-    - 9201:8080   # Changed from 9200:8080 (Avoids potential future conflicts)
-    - 25566:8080
+    # - 80:8080
+    # - 443:8080
+    - 8080:8080
+    - 9200:8080
+    - 25565:8080
     image: ${TPOT_REPO}/log4pot:${TPOT_VERSION}
     pull_policy: ${TPOT_PULL_POLICY}
     read_only: true
     volumes:
     - ${TPOT_DATA_PATH}/log4pot/log:/var/log/log4pot/log
     - ${TPOT_DATA_PATH}/log4pot/payloads:/var/log/log4pot/payloads
-  miniprint:
-    container_name: miniprint
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    networks:
-    - miniprint_local
-    ports:
-    - 9100:9100
-    image: ${TPOT_REPO}/miniprint:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    read_only: true
-    volumes:
-    - ${TPOT_DATA_PATH}/miniprint/log/:/opt/miniprint/log/
-    - ${TPOT_DATA_PATH}/miniprint/uploads/:/opt/miniprint/uploads/
-  redishoneypot:
-    container_name: redishoneypot
-    restart: always
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    networks:
-    - redishoneypot_local
-    ports:
-    - 6379:6379
-    image: ${TPOT_REPO}/redishoneypot:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    read_only: true
-    volumes:
-    - ${TPOT_DATA_PATH}/redishoneypot/log:/var/log/redishoneypot
   sentrypeer:
     container_name: sentrypeer
     restart: always
@@ -398,18 +149,6 @@ services:
     read_only: true
     volumes:
     - ${TPOT_DATA_PATH}/sentrypeer/log:/var/log/sentrypeer
-  # snare:
-  #   container_name: snare
-  #   restart: always
-  #   depends_on:
-  #   - tanner
-  #   tty: true
-  #   networks:
-  #   - tanner_local
-  #   ports:
-  #   - 80:80
-  #   image: ${TPOT_REPO}/snare:${TPOT_VERSION}
-  #   pull_policy: ${TPOT_PULL_POLICY}
   p0f:
     container_name: p0f
     restart: always
@@ -444,90 +183,3 @@ services:
     volumes:
     - ${TPOT_DATA_PATH}:/data
     - ${TPOT_DATA_PATH}/ews/conf/ews.ip:/opt/ewsposter/ews.ip
-  nginx:
-    container_name: nginx
-    restart: always
-    environment:
-    - TPOT_OSTYPE=${TPOT_OSTYPE}
-    depends_on:
-      tpotinit:
-        condition: service_healthy
-    tmpfs:
-    - /var/tmp/nginx/client_body
-    - /var/tmp/nginx/proxy
-    - /var/tmp/nginx/fastcgi
-    - /var/tmp/nginx/uwsgi
-    - /var/tmp/nginx/scgi
-    - /run
-    - /var/lib/nginx/tmp:uid=100,gid=82
-    networks:
-    - nginx_local
-    ports:
-    - 64297:64297
-    - 64294:64294
-    image: ${TPOT_REPO}/nginx:${TPOT_VERSION}
-    pull_policy: ${TPOT_PULL_POLICY}
-    read_only: true
-    volumes:
-    - ${TPOT_DATA_PATH}/nginx/cert/:/etc/nginx/cert/:ro
-    - ${TPOT_DATA_PATH}/nginx/conf/nginxpasswd:/etc/nginx/nginxpasswd:ro
-    - ${TPOT_DATA_PATH}/nginx/conf/lswebpasswd:/etc/nginx/lswebpasswd:ro
-    - ${TPOT_DATA_PATH}/nginx/log/:/var/log/nginx/
-  # tanner:
-  #   container_name: tanner
-  #   restart: always
-  #   depends_on:
-  #   - tanner_api
-  #   - tanner_phpox
-  #   tmpfs:
-  #   - /tmp/tanner:uid=2000,gid=2000
-  #   tty: true
-  #   networks:
-  #   - tanner_local
-  #   image: ${TPOT_REPO}/tanner:${TPOT_VERSION}
-  #   pull_policy: ${TPOT_PULL_POLICY}
-  #   command: tanner
-  #   read_only: true
-  #   volumes:
-  #   - ${TPOT_DATA_PATH}/tanner/log:/var/log/tanner
-  #   - ${TPOT_DATA_PATH}/tanner/files:/opt/tanner/files
-  # tanner_redis:
-  #   container_name: tanner_redis
-  #   restart: always
-  #   depends_on:
-  #     tpotinit:
-  #       condition: service_healthy
-  #   tty: true
-  #   networks:
-  #   - tanner_local
-  #   image: ${TPOT_REPO}/redis:${TPOT_VERSION}
-  #   pull_policy: ${TPOT_PULL_POLICY}
-  #   read_only: true
-  # tanner_phpox:
-  #   container_name: tanner_phpox
-  #   restart: always
-  #   depends_on:
-  #     tpotinit:
-  #       condition: service_healthy
-  #   tty: true
-  #   networks:
-  #   - tanner_local
-  #   image: ${TPOT_REPO}/phpox:${TPOT_VERSION}
-  #   pull_policy: ${TPOT_PULL_POLICY}
-  #   read_only: true
-  # tanner_api:
-  #   container_name: tanner_api
-  #   restart: always
-  #   depends_on:
-  #   - tanner_redis
-  #   tmpfs:
-  #   - /tmp/tanner:uid=2000,gid=2000
-  #   tty: true
-  #   networks:
-  #   - tanner_local
-  #   image: ${TPOT_REPO}/tanner:${TPOT_VERSION}
-  #   pull_policy: ${TPOT_PULL_POLICY}
-  #   read_only: true
-  #   volumes:
-  #   - ${TPOT_DATA_PATH}/tanner/log:/var/log/tanner
-  #   command: tannerapi
