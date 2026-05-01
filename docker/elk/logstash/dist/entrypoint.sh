@@ -37,8 +37,8 @@ if [ "$myCHECK" == "0" ];
   then
     echo "Connection to Listbot looks good, now downloading latest translation maps."
     cd /etc/listbot 
-    aria2c -s16 -x 16 https://listbot.sicherheitstacho.eu/cve.yaml.bz2 && \
-    aria2c -s16 -x 16 https://listbot.sicherheitstacho.eu/iprep.yaml.bz2 && \
+    aria2c -s16 -x 16 https://raw.github.com/SweetBaitAdmin/listbot-lists/blob/main/cve.yaml.bz2 && \
+    aria2c -s16 -x 16 https://raw.github.com/SweetBaitAdmin/listbot-lists/blob/main/iprep.yaml.bz2 && \
     bunzip2 -f *.bz2
     cd /
   else
@@ -101,8 +101,14 @@ if [ "$TPOT_TYPE" != "SENSOR" ];
 fi
 echo
 
-ARCH=$(arch)
-if [ "$ARCH" = "aarch64" ]; then
-  export _JAVA_OPTIONS="-XX:UseSVE=0";
-fi
+# --- CRITICAL MEMORY OVERRIDE SECTION ---
+# We force these variables BEFORE the JVM starts to override any defaults
+export LS_JAVA_OPTS="-Xms128m -Xmx128m"
+export _JAVA_OPTIONS="-Xms128m -Xmx128m -XX:UseSVE=0"
+unset JAVA_TOOL_OPTIONS
+
+echo "Starting Logstash with memory limits: 128MB min/max"
+# ----------------------------------------
+
 exec /usr/share/logstash/bin/logstash --config.reload.automatic
+
