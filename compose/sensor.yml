@@ -34,15 +34,16 @@ services:
       tpotinit:
         condition: service_healthy
     environment:
-     - LS_JAVA_OPTS=-Xms512m -Xmx512m
+     - LS_JAVA_OPTS=-Xms256m -Xmx256m
      - TPOT_TYPE=${TPOT_TYPE:-HIVE}
      - TPOT_HIVE_USER=${TPOT_HIVE_USER}
      - TPOT_HIVE_IP=${TPOT_HIVE_IP}
      - LS_SSL_VERIFICATION=${LS_SSL_VERIFICATION:-full}
     ports:
      - "127.0.0.1:64305:64305"
-    mem_limit: 1g
-    image: ${TPOT_REPO}/logstash:${TPOT_VERSION}
+    mem_limit: 512m
+    memswap_limit: 2g
+    image: ghcr.io/sweetbaitadmin/bear_project:logstash-arm64-v2
     pull_policy: ${TPOT_PULL_POLICY}
     volumes:
      - ${TPOT_DATA_PATH}:/data
