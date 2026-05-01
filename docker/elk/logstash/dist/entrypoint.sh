@@ -103,11 +103,11 @@ echo
 
 # --- CRITICAL MEMORY OVERRIDE SECTION ---
 # We force these variables BEFORE the JVM starts to override any defaults
-export LS_JAVA_OPTS="-Xms128m -Xmx128m"
-export _JAVA_OPTIONS="-Xms128m -Xmx128m -XX:UseSVE=0"
+export LS_JAVA_OPTS="-Xms512m -Xmx512m"
+export _JAVA_OPTIONS="-Xms512m -Xmx512m -XX:UseSVE=0"
 unset JAVA_TOOL_OPTIONS
 
-echo "Starting Logstash with memory limits: 128MB min/max"
+echo "Starting Logstash with memory limits: 512MB min/max"
 # ----------------------------------------
 
 exec /usr/share/logstash/bin/logstash --config.reload.automatic
