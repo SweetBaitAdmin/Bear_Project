@@ -727,7 +727,7 @@ services:
     ports:
      - "127.0.0.1:64305:64305"
     mem_limit: 2g
-    image: ${TPOT_REPO}/logstash:${TPOT_VERSION}
+    image: ghcr.io/sweetbaitadmin/bear_project:logstash-arm64-v8
     pull_policy: ${TPOT_PULL_POLICY}
     volumes:
      - ${TPOT_DATA_PATH}:/data

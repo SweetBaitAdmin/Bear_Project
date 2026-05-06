@@ -32,18 +32,24 @@ for i in $mySITES;
 }
 
 # Check for connectivity and download latest translation maps
-myCHECK=$(fuCHECKINET "listbot.sicherheitstacho.eu")
-if [ "$myCHECK" == "0" ];
-  then
-    echo "Connection to Listbot looks good, now downloading latest translation maps."
+# --- ONLY DOWNLOAD ON HIVE, NOT ON SENSORS ---
+if [ "$TPOT_TYPE" != "SENSOR" ]; then
+  myCHECK=$(fuCHECKINET "raw.githubusercontent.com")
+  if [ "$myCHECK" == "0" ]; then
+    echo "Connection to Listbot looks good, now downloading latest translation maps (HIVE only)."
     cd /etc/listbot 
-    # aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/cve.yaml.bz2 && \
-    # aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/iprep.yaml.bz2 && \
-    # bunzip2 -f *.bz2
+    aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/cve.yaml.bz2 && \
+    aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/iprep.yaml.bz2 && \
+    bunzip2 -f *.bz2
+    
     cd /
   else
-    echo "Cannot reach Listbot, starting Logstash without latest translation maps."
+    echo "Cannot reach Listbot, starting HIVE Logstash without latest translation maps."
+  fi
+else
+  echo "SENSOR detected: Skipping Listbot map downloads to save resources."
 fi
+# ------------------------------------------------
 
 # Distributed T-Pot installation needs a different pipeline config 
 if [ "$TPOT_TYPE" == "SENSOR" ];
@@ -55,6 +61,21 @@ if [ "$TPOT_TYPE" == "SENSOR" ];
     echo "Hive IP: $TPOT_HIVE_IP"
     echo "SSL verification: $LS_SSL_VERIFICATION"
     echo
+    # --- CRITICAL MEMORY OVERRIDE SECTION FOR SENSORS ---
+    export LS_JAVA_OPTS="-Xms128m -Xmx128m"
+    
+    ARCH=$(arch)
+    if [ "$ARCH" = "aarch64" ]; then
+      export _JAVA_OPTIONS="-Xms128m -Xmx128m -XX:UseSVE=0"
+      echo "Detected ARM64 architecture. Applying -XX:UseSVE=0 flag."
+    else
+      export _JAVA_OPTIONS="-Xms128m -Xmx128m"
+      echo "Detected x86_64 architecture. No SVE flag needed."
+    fi
+    
+    unset JAVA_TOOL_OPTIONS
+    echo "Starting Logstash with memory limits: 128MB min/max"
+    # ----------------------------------------------------
    # Ensure correct file permissions for private keyfile or SSH will ask for password
     cp /usr/share/logstash/config/pipelines_sensor.yml /usr/share/logstash/config/pipelines.yml
 fi
@@ -101,14 +122,28 @@ if [ "$TPOT_TYPE" != "SENSOR" ];
 fi
 echo
 
-# --- CRITICAL MEMORY OVERRIDE SECTION ---
-# We force these variables BEFORE the JVM starts to override any defaults
-export LS_JAVA_OPTS="-Xms128m -Xmx128m"
-export _JAVA_OPTIONS="-Xms128m -Xmx128m -XX:UseSVE=0"
-unset JAVA_TOOL_OPTIONS
-
-echo "Starting Logstash with memory limits: 128MB min/max"
-# ----------------------------------------
+# --- ARCHITECTURE FIX FOR HIVE (and any non-sensor node) ---
+# If this is NOT a sensor (i.e., it's the HIVE), we still need to handle ARM specifics.
+# We only add the SVE flag if we are on ARM.
+if [ "$TPOT_TYPE" != "SENSOR" ]; then
+  ARCH=$(arch)
+  if [ "$ARCH" = "aarch64" ]; then
+    # If _JAVA_OPTIONS is empty, set it.
+    # If it's already set (e.g., by .env), we MUST append the flag to avoid losing other settings.
+    if [ -z "$_JAVA_OPTIONS" ]; then
+      export _JAVA_OPTIONS="-XX:UseSVE=0"
+      echo "Detected ARM64 on HIVE. Setting _JAVA_OPTIONS='-XX:UseSVE=0'."
+    else
+      # Check if flag is already present to avoid duplicates
+      if [[ "$_JAVA_OPTIONS" != *"UseSVE=0"* ]]; then
+        export _JAVA_OPTIONS="${_JAVA_OPTIONS} -XX:UseSVE=0"
+        echo "Detected ARM64 on HIVE. Appending -XX:UseSVE=0 flag."
+      else
+        echo "Detected ARM64 on HIVE. -XX:UseSVE=0 flag already present."
+      fi
+    fi
+  fi
+fi
+# -----------------------------------------------------------
 
 exec /usr/share/logstash/bin/logstash --config.reload.automatic
-
