@@ -22,9 +22,9 @@ RUN apt-get update -y && \
     echo "$ARCH" && \
     mkdir -p /etc/listbot && \
     cd /etc/listbot && \
-    aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/cve.yaml.bz2 && \
-    aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/iprep.yaml.bz2 && \
-    bunzip2 *.bz2 && \
+    # aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/cve.yaml.bz2 && \
+    # aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/iprep.yaml.bz2 && \
+    # bunzip2 *.bz2 && \
     cd /root/dist/ && \
     aria2c -s 16 -x 16 https://artifacts.elastic.co/downloads/logstash/logstash-$LS_VER-$LS_ARCH.deb && \
     dpkg -i logstash-$LS_VER-$LS_ARCH.deb && \

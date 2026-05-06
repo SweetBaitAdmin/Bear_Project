@@ -37,9 +37,9 @@ if [ "$myCHECK" == "0" ];
   then
     echo "Connection to Listbot looks good, now downloading latest translation maps."
     cd /etc/listbot 
-    aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/cve.yaml.bz2 && \
-    aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/iprep.yaml.bz2 && \
-    bunzip2 -f *.bz2
+    # aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/cve.yaml.bz2 && \
+    # aria2c -s16 -x 16 https://raw.githubusercontent.com/SweetBaitAdmin/listbot-lists/main/iprep.yaml.bz2 && \
+    # bunzip2 -f *.bz2
     cd /
   else
     echo "Cannot reach Listbot, starting Logstash without latest translation maps."
@@ -103,11 +103,11 @@ echo
 
 # --- CRITICAL MEMORY OVERRIDE SECTION ---
 # We force these variables BEFORE the JVM starts to override any defaults
-export LS_JAVA_OPTS="-Xms512m -Xmx512m"
-export _JAVA_OPTIONS="-Xms512m -Xmx512m -XX:UseSVE=0"
+export LS_JAVA_OPTS="-Xms128m -Xmx128m"
+export _JAVA_OPTIONS="-Xms128m -Xmx128m -XX:UseSVE=0"
 unset JAVA_TOOL_OPTIONS
 
-echo "Starting Logstash with memory limits: 512MB min/max"
+echo "Starting Logstash with memory limits: 128MB min/max"
 # ----------------------------------------
 
 exec /usr/share/logstash/bin/logstash --config.reload.automatic
