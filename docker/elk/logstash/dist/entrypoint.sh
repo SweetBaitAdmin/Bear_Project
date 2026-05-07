@@ -62,19 +62,19 @@ if [ "$TPOT_TYPE" == "SENSOR" ];
     echo "SSL verification: $LS_SSL_VERIFICATION"
     echo
     # --- CRITICAL MEMORY OVERRIDE SECTION FOR SENSORS ---
-    export LS_JAVA_OPTS="-Xms128m -Xmx128m"
+    export LS_JAVA_OPTS="-Xms256m -Xmx256m"
     
     ARCH=$(arch)
     if [ "$ARCH" = "aarch64" ]; then
-      export _JAVA_OPTIONS="-Xms128m -Xmx128m -XX:UseSVE=0"
+      export _JAVA_OPTIONS="-Xms256m -Xmx256m -XX:UseSVE=0"
       echo "Detected ARM64 architecture. Applying -XX:UseSVE=0 flag."
     else
-      export _JAVA_OPTIONS="-Xms128m -Xmx128m"
+      export _JAVA_OPTIONS="-Xms256m -Xmx256m"
       echo "Detected x86_64 architecture. No SVE flag needed."
     fi
     
     unset JAVA_TOOL_OPTIONS
-    echo "Starting Logstash with memory limits: 128MB min/max"
+    echo "Starting Logstash with memory limits: 256MB min/max"
     # ----------------------------------------------------
    # Ensure correct file permissions for private keyfile or SSH will ask for password
     cp /usr/share/logstash/config/pipelines_sensor.yml /usr/share/logstash/config/pipelines.yml
